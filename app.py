@@ -1340,5 +1340,17 @@ def customer_review_analysis():
         error=None
     )
 
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                           'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+# Vercel handler
+def vercel_handler(request):
+    with app.app_context():
+        response = app.full_dispatch_request()(request)
+    return response
+    
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
