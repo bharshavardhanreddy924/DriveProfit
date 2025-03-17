@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mercedes‑Benz Models</title>
+</head>
+<body>
+    <h1>Mercedes‑Benz Models</h1>
+    <ul>
+    {% for model, url in models.items() %}
+        <!-- The link goes to the route that will show reviews for the model -->
+        <li><a href="{{ url_for('model_reviews', model_name=model) }}">{{ model }}</a></li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

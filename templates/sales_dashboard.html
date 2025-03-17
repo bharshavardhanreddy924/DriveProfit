@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercedes-Benz Luxury Showroom</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        :root {
+            --primary-black: #000000;
+            --primary-silver: #E6E6E6;
+            --accent-silver: #999999;
+            --white: #FFFFFF;
+            --mercedes-blue: #00A0E3;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://www.pixel4k.com/wp-content/uploads/2019/11/amg-gtr-mercedes_1574936050.jpg') center/cover no-repeat fixed;
+            color: var(--white);
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg') center/contain no-repeat;
+        }
+
+        .brand-name {
+            color: var(--white);
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--mercedes-blue);
+        }
+
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--accent-silver);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-title {
+            font-size: 1.2rem;
+            color: var(--accent-silver);
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .vehicle-card {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--accent-silver);
+            transition: transform 0.3s;
+        }
+
+        .vehicle-card:hover {
+            transform: scale(1.02);
+        }
+
+        .vehicle-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .vehicle-details {
+            padding: 1.5rem;
+        }
+
+        .vehicle-name {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .vehicle-price {
+            color: var(--accent-silver);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-btn {
+            background-color: var(--mercedes-blue);
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .action-btn:hover {
+            background-color: var(--white);
+            color: var(--mercedes-blue);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+        }
+
+        .modal-content {
+            background-color: var(--primary-black);
+            margin: 10% auto;
+            padding: 2rem;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            border: 1px solid var(--accent-silver);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--accent-silver);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--accent-silver);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-radius: 5px;
+        }
+
+        .close {
+            color: var(--white);
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .recent-orders {
+            margin-top: 3rem;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--accent-silver);
+        }
+
+        .orders-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .order-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--accent-silver);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo"></div>
+            <span class="brand-name">Akshaya Motors</span>
+        </div>
+        <div class="nav-links">
+            <a href="#dashboard">Dashboard</a>
+            <a href="#vehicles">Vehicles</a>
+            <a href="#orders">Orders</a>
+            <a href="#logout">Logout</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-title">Total Sales</div>
+                <div class="stat-value">{{ total_sales }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Total Revenue</div>
+                <div class="stat-value">₹{{ total_revenue }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Monthly Sales</div>
+                <div class="stat-value">{{ monthly_sales }}</div>
+            </div>
+        </section>
+
+        <section class="vehicles-grid">
+            {% for car in available_cars %}
+            <div class="vehicle-card">
+                <!-- Dynamically set the image path based on the car model -->
+                <div class="vehicle-image" style="background: url('{{ url_for('static', filename='images/' + car['Model Name'] + '.jpeg') }}') center/cover no-repeat;"></div>
+                <div class="vehicle-details">
+                    <h3 class="vehicle-name">{{ car['Model Name'] }}</h3>
+                    <div class="vehicle-price">₹{{ car['Price of Model ($)'] }}</div>
+                    <button class="action-btn" onclick="openModal('{{ car._id }}')">Place Order</button>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+        
+
+        <section class="recent-orders">
+            <h2>Recent Orders</h2>
+            <ul class="orders-list">
+                {% for order in recent_orders %}
+                <li class="order-item">
+                    <span>{{ order.car_model }}</span>
+                    <span>₹{{ order.price }}</span>
+                    <span>{{ order.customer_name }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Place Order</h2>
+            <form id="orderForm" method="POST" action="{{ url_for('place_order') }}">
+                <input type="hidden" id="car_id" name="car_id">
+                <div class="form-group">
+                    <label for="customer_name">Customer Name</label>
+                    <input type="text" id="customer_name" name="customer_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="customer_phone">Customer Phone</label>
+                    <input type="text" id="customer_phone" name="customer_phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="customer_email">Customer Email</label>
+                    <input type="email" id="customer_email" name="customer_email" required>
+                </div>
+                <button type="submit" class="action-btn">Confirm Order</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(carId) {
+            document.getElementById('car_id').value = carId;
+            document.getElementById('orderModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('orderModal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

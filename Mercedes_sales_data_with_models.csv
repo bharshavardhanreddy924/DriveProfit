@@ -1,0 +1,28 @@
+Model Name,Type of Car,Type of Fuel,Engine Type,Power / Torque,Transmission,Mileage / Range,Price of Model,Number of Airbags,Length (mm),Width (mm),Height (mm),Jan,Feb,Mar,Apr,May,June,July,Aug,Sep,Oct,Nov,Dec,total
+A,Hatchback,Petrol,Inline-4,163 HP / 250 Nm,Automatic,16 km/l,"43,48,050",6,4419,1796,1440,5,2,6,,5,2,3,4,8,9,2,3,49
+C,Sedan,Petrol,Inline-4,255 HP / 370 Nm,Automatic,14 km/l,"57,41,850",6,4686,1810,1442,5,4,4,3,2,8,6,5,5,10,2,5,59
+E,Sedan,Petrol,Inline-6,362 HP / 500 Nm,Automatic,12 km/l,"79,28,500",8,4925,1852,1468,2,9,10,5,4,4,7,5,4,4,7,12,73
+GLA,SUV,Petrol,Inline-4,221 HP / 350 Nm,Automatic,15 km/l,"50,75,250",6,4410,1834,1611,4,15,22,6,9,18,12,16,16,14,11,11,154
+GLB,SUV,Petrol,Inline-4,221 HP / 350 Nm,Automatic,14 km/l,"68,28,500",6,4634,1834,1658,2,0,0,0,0,0,0,0,0,0,0,0,2
+GLC,SUV,Petrol,Inline-4,255 HP / 370 Nm,Automatic,13 km/l,"74,63,900",7,4658,1890,1645,16,11,38,8,12,7,13,25,26,13,17,18,204
+GLE,SUV,Petrol,Inline-6,362 HP / 500 Nm,Automatic,11 km/l,"98,82,851",9,4817,1935,1772,6,19,16,5,12,8,10,10,15,11,3,15,130
+GLS,SUV,Petrol,V8,483 HP / 700 Nm,Automatic,8 km/l,"1,33,57,250",9,5207,1956,1823,1,7,11,3,6,9,8,9,9,5,8,9,85
+S,Sedan,Petrol,Inline-6,429 HP / 520 Nm,Automatic,10 km/l,"1,73,66,949",10,5280,1921,1503,1,0,2,1,0,3,1,2,0,0,1,3,14
+S MM,Sedan,Petrol,V8,496 HP / 700 Nm,Automatic,9 km/l,"2,74,66,950",10,5469,1921,1503,0,0,1,1,0,0,2,2,0,0,0,3,9
+GLS MM,SUV,Petrol,V8,550 HP / 730 Nm,Automatic,8 km/l,"3,39,38,021",10,5207,1956,1823,0,2,0,0,0,0,0,0,1,0,0,0,3
+C43,Sedan,Petrol,V6,402 HP / 520 Nm,Automatic,11 km/l,"99,23,250",8,4691,1810,1446,1,0,0,0,0,0,0,0,0,0,0,0,1
+GLE 53,SUV,Petrol,Inline-6,429 HP / 520 Nm,Automatic,9 km/l,"1,87,10,250",9,4941,2014,1797,1,0,0,0,0,1,0,0,0,0,0,0,2
+AMGGLA35,SUV,Petrol,Inline-4,302 HP / 400 Nm,Automatic,13 km/l,"58,23,834",6,4436,1849,1584,1,0,1,0,0,0,0,0,0,0,0,0,2
+G,SUV,Petrol,V8,416 HP / 610 Nm,Automatic,6 km/l,"3,65,00,000",6,4817,1935,1969,1,0,0,0,1,0,0,0,0,0,0,0,2
+AMG G63,SUV,Petrol,V8,577 HP / 850 Nm,Automatic,6 km/l,"3,65,00,000",6,4873,1984,1966,0,0,0,0,0,0,0,0,0,1,3,0,4
+AMG GLC43,SUV,Petrol,V6,385 HP / 520 Nm,Automatic,10 km/l,"1,11,60,500",8,4731,1890,1617,0,0,0,0,0,0,0,3,0,0,1,0,4
+AMG SL55,Convertible,Petrol,V8,469 HP / 700 Nm,Automatic,9 km/l,"2,65,51,890",6,4705,1915,1359,0,0,1,0,0,0,0,0,0,0,0,0,1
+AMG GT,Coupe,Petrol,V8,523 HP / 670 Nm,Automatic,8 km/l,"2,42,51,890",6,4544,1939,1287,0,0,0,0,0,0,0,0,0,1,0,0,1
+CLE AMG,Coupe,Petrol,Inline-6,450 HP / 580 Nm,Automatic,11 km/l,"1,11,09,999",8,4822,1869,1436,0,0,0,0,0,0,0,2,2,2,0,1,7
+EQA Suv,SUV,Electric,Electric Motor,188 HP / 375 Nm,Automatic,400 km/charge,"66,66,000",6,4463,1834,1625,0,0,0,0,0,2,0,1,3,0,1,2,9
+EQB Suv,SUV,Electric,Electric Motor,225 HP / 390 Nm,Automatic,419 km/charge,"71,60,900",6,4684,1834,1667,1,0,2,1,0,0,0,1,0,0,0,1,6
+EQE Suv,SUV,Electric,Electric Motor,288 HP / 500 Nm,Automatic,590 km/charge,"1,39,000",8,4940,1961,1689,0,0,6,1,0,1,1,0,0,0,0,0,10
+EQS,Sedan,Electric,Electric Motor,329 HP / 550 Nm,Automatic,620 km/charge,"1,62,000",8,5216,1926,1512,0,1,0,1,0,0,1,0,0,3,1,2,9
+EQS MM,Sedan,Electric,Electric Motor,649 HP / 950 Nm,Automatic,550 km/charge,"2,51,49,000",10,5265,1926,1515,0,0,0,0,0,0,0,0,1,0,1,0,2
+EQS Suv,SUV,Electric,Electric Motor,355 HP / 750 Nm,Automatic,580 km/charge,13549000,8,5125,1954,1709,0,0,1,0,0,0,0,0,1,0,0,0,2
+,,,,,,,,,,,,47,70,121,35,51,63,64,85,91,73,58,86,844

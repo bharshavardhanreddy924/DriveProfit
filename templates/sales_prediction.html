@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sales Prediction | Mercedes-Benz Analytics</title>
+  <!-- Bootstrap CSS & Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Plotly -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.1/plotly.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #00A0E3;
+      --dark-bg: #1E1E1E;
+      --card-bg: #2A2A2A;
+      --text-primary: #FFFFFF;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+      --border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--dark-bg) 0%, #0F0F0F 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding-top: 80px;
+    }
+    
+    /* Navbar */
+    .navbar {
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--primary-color);
+    }
+    .navbar-brand {
+      font-weight: 600;
+      color: var(--text-primary) !important;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    /* Header Section */
+    .header-section {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem 0;
+    }
+    .header-section h1 {
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    .header-section p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    /* Card Styles */
+    .card-custom {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 15px;
+      padding: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-custom:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Form Select */
+    select.form-select-custom {
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 1.125rem;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+    }
+    select.form-select-custom:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(0, 160, 227, 0.25);
+    }
+    
+    /* Loader */
+    #loading {
+      display: none;
+    }
+    .loader {
+      border: 4px solid rgba(255,255,255,0.1);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Error Alert */
+    .alert-custom {
+      background: rgba(220,53,69,0.2);
+      border: 1px solid rgba(220,53,69,0.4);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    
+    /* Stats Cards */
+    .stats-card {
+      background: linear-gradient(45deg, var(--card-bg), #353535);
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .stats-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .stats-icon {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+    .stats-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .stats-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    /* Plotly Container */
+    .plot-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 15px;
+      padding: 1.5rem;
+      height: 600px;
+    }
+    
+    /* Fade-In Animation */
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <img src="https://www.mercedes-benz.com/content/dam/brandhub/global/logos/MB-star_n_web.svg" alt="Mercedes-Benz Logo" style="height:40px;">
+        Analytics Dashboard
+      </a>
+      <button class="btn btn-outline-light">
+        <i class="fas fa-question-circle me-2"></i>Help
+      </button>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <!-- Header Section -->
+    <div class="header-section fade-in">
+      <h1>Sales Prediction Dashboard</h1>
+      <p>Advanced analytics powered by multiple machine learning algorithms to predict Mercedes-Benz model sales.</p>
+    </div>
+
+    <!-- Model Selection Card -->
+    <div class="card-custom mb-4 fade-in">
+      <div class="mb-3">
+        <label for="modelSelect" class="form-label h5">
+          <i class="fas fa-car me-2"></i>Select Mercedes-Benz Model
+        </label>
+        <select id="modelSelect" class="form-select form-select-custom" onchange="getPredictions()">
+          <option value="">Choose a model...</option>
+          {% for model in models %}
+          <option value="{{ model }}">{{ model }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div id="loading" class="text-center fade-in d-none">
+      <div class="loader mx-auto"></div>
+      <p class="h5">Analyzing sales patterns...</p>
+    </div>
+
+    <!-- Error Display -->
+    <div id="error" class="alert alert-custom fade-in d-none">
+      <i class="fas fa-exclamation-circle me-2"></i>
+      <span id="errorText"></span>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="d-none fade-in">
+      <!-- Summary Stats Cards -->
+      <div class="card-custom mb-4">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-robot text-primary me-2" style="font-size: 1.75rem;"></i>
+          <h2 class="h4 mb-0">AI Model Predictions for January 2025</h2>
+        </div>
+        <div class="row text-center g-3">
+          <!-- Linear Regression Card -->
+          <div class="col-md-3">
+            <div class="stats-card">
+              <div class="stats-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <p id="pred-linear" class="stats-value">-</p>
+              <p class="stats-label">Linear Regression</p>
+            </div>
+          </div>
+          <!-- Prophet Card -->
+          <div class="col-md-3">
+            <div class="stats-card">
+              <div class="stats-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <p id="pred-prophet" class="stats-value">-</p>
+              <p class="stats-label">Prophet</p>
+            </div>
+          </div>
+          <!-- Random Forest Card -->
+          <div class="col-md-3">
+            <div class="stats-card">
+              <div class="stats-icon">
+                <i class="fas fa-tree"></i>
+              </div>
+              <p id="pred-rf" class="stats-value">-</p>
+              <p class="stats-label">Random Forest</p>
+            </div>
+          </div>
+          <!-- LightGBM Card -->
+          <div class="col-md-3">
+            <div class="stats-card">
+              <div class="stats-icon">
+                <i class="fas fa-bolt"></i>
+              </div>
+              <p id="pred-lgb" class="stats-value">-</p>
+              <p class="stats-label">LightGBM</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graph Card -->
+      <div class="card-custom">
+        <div class="d-flex align-items-center mb-3">
+          <i class="fas fa-chart-area text-primary me-2" style="font-size: 1.75rem;"></i>
+          <h2 class="h4 mb-0">Sales Trend Analysis</h2>
+        </div>
+        <div id="plotDiv" class="plot-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function getPredictions() {
+      const modelSelect = document.getElementById('modelSelect');
+      const modelName = modelSelect.value;
+      if (!modelName) return;
+      
+      // Hide results and error, show loader
+      document.getElementById('loading').classList.remove('d-none');
+      document.getElementById('results').classList.add('d-none');
+      document.getElementById('error').classList.add('d-none');
+      
+      fetch(`/get_prediction/${encodeURIComponent(modelName)}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('loading').classList.add('d-none');
+          
+          if (data.success) {
+            document.getElementById('results').classList.remove('d-none');
+            
+            const predictions = {
+              'Linear Regression': ['pred-linear', 'green'],
+              'Prophet': ['pred-prophet', 'blue'],
+              'Random Forest': ['pred-rf', 'purple'],
+              'LightGBM': ['pred-lgb', 'red']
+            };
+            
+            Object.entries(predictions).forEach(([model, [elementId, color]]) => {
+              const element = document.getElementById(elementId);
+              element.textContent = data.predictions[model].toLocaleString();
+              element.classList.add('animate-pulse');
+              setTimeout(() => element.classList.remove('animate-pulse'), 1000);
+            });
+            
+            // Retrieve CSS variable value for text color
+            const computedStyles = getComputedStyle(document.documentElement);
+            const textPrimary = computedStyles.getPropertyValue('--text-primary').trim();
+            
+            // Configure Plotly layout and traces
+            const plotData = JSON.parse(data.plot);
+            plotData.layout = {
+              ...plotData.layout,
+              paper_bgcolor: 'rgba(0,0,0,0)',
+              plot_bgcolor: 'rgba(0,0,0,0)',
+              font: { 
+                family: 'Inter, system-ui, sans-serif',
+                size: 12,
+                color: textPrimary
+              },
+              margin: { l: 50, r: 30, t: 80, b: 50 },
+              xaxis: {
+                showgrid: true,
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: textPrimary }
+              },
+              yaxis: {
+                showgrid: true,
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: textPrimary }
+              },
+              legend: {
+                bgcolor: 'rgba(255,255,255,0.1)',
+                bordercolor: 'rgba(255,255,255,0.2)',
+                borderwidth: 1,
+                font: { color: textPrimary, size: 11 },
+                orientation: 'h'
+              },
+              hovermode: 'x unified'
+            };
+            
+            plotData.data = plotData.data.map(trace => ({
+              ...trace,
+              line: { ...trace.line, width: 2.5 },
+              marker: { ...trace.marker, size: 8 }
+            }));
+            
+            Plotly.newPlot('plotDiv', plotData.data, plotData.layout, {
+              displayModeBar: true,
+              displaylogo: false,
+              modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+              toImageButtonOptions: {
+                format: 'png',
+                filename: 'sales_prediction',
+                height: 800,
+                width: 1200,
+                scale: 2
+              }
+            });
+            
+            // Smooth scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            document.getElementById('error').classList.remove('d-none');
+            document.getElementById('errorText').textContent = data.error;
+          }
+        })
+        .catch(error => {
+          document.getElementById('loading').classList.add('d-none');
+          document.getElementById('error').classList.remove('d-none');
+          document.getElementById('errorText').textContent = 'An error occurred while fetching predictions.';
+        });
+    }
+    
+    // Resize Plotly chart on window resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function() {
+        const plotDiv = document.getElementById('plotDiv');
+        if (plotDiv) {
+          Plotly.Plots.resize(plotDiv);
+        }
+      }, 250);
+    });
+  </script>
+</body>
+</html>

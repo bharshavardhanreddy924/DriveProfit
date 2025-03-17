@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercedes Sales Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        :root {
+            --primary-black: #000000;
+            --primary-silver: #E6E6E6;
+            --accent-silver: #999999;
+            --white: #FFFFFF;
+            --mercedes-blue: #00A0E3;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                   url('static/images/back.jpeg');
+            color: var(--white);
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg') center/contain no-repeat;
+        }
+
+        .brand-name {
+            color: var(--white);
+            font-size: 1.5rem;
+            margin-left: 1rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--mercedes-blue);
+        }
+
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+        }
+
+        .analysis-section {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid var(--accent-silver);
+            margin-bottom: 2rem;
+        }
+
+        .analysis-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--mercedes-blue);
+        }
+
+        .plotly-graph {
+            width: 100%;
+            height: 500px;
+            border-radius: 10px;
+        }
+
+        .data-table {
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--accent-silver);
+        }
+
+        .data-table th {
+            background-color: rgba(0, 0, 0, 0.9);
+            color: var(--mercedes-blue);
+        }
+
+        .data-table td {
+            color: var(--white);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo"></div>
+            <span class="brand-name">Mercedes Sales Analysis</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/mercedes-sales">Mercedes Sales</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Analysis Section -->
+        <section class="analysis-section">
+            <h2>Total Sales by Model</h2>
+            <div class="plotly-graph">
+                {{ plot1 | safe }}
+            </div>
+        </section>
+
+        <section class="analysis-section">
+            <h2>Average Price by Car Type</h2>
+            <div class="plotly-graph">
+                {{ plot2 | safe }}
+            </div>
+        </section>
+
+        <section class="analysis-section">
+            <h2>Monthly Sales Trends</h2>
+            <div class="plotly-graph">
+                {{ plot3 | safe }}
+            </div>
+        </section>
+
+        <section class="analysis-section">
+            <h2>Sales by Fuel Type</h2>
+            <div class="plotly-graph">
+                {{ plot4 | safe }}
+            </div>
+        </section>
+
+        <section class="analysis-section">
+            <h2>Top 5 Models by Total Sales</h2>
+            <div class="plotly-graph">
+                {{ plot5 | safe }}
+            </div>
+        </section>
+
+        <section class="analysis-section">
+            <h2>Price vs Horsepower</h2>
+            <div class="plotly-graph">
+                {{ plot6 | safe }}
+            </div>
+            <p><strong>Correlation between Price and Horsepower:</strong> 
+                {% if price_horsepower_corr is not none %}
+                    {{ price_horsepower_corr | round(2) }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </p>
+        </section>
+    </main>
+</body>
+</html>

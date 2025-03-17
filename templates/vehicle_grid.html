@@ -1,0 +1,16 @@
+<section class="vehicles-grid">
+    {% for car in available_cars %}
+    <div class="vehicle-card">
+        <div class="vehicle-image">
+            <!-- Dynamically construct the image file name -->
+            <img src="{{ url_for('serve_image', filename=car['Model Name']|replace(' ', '_') ~ '.jpeg') }}" 
+                 alt="{{ car['Model Name'] }} Image" />
+        </div>
+        <div class="vehicle-details">
+            <h3 class="vehicle-name">{{ car['Model Name'] }}</h3>
+            <div class="vehicle-price">₹{{ car['Price of Model ($)'] }}</div>
+            <button class="action-btn" onclick="openModal('{{ car._id }}')">Place Order</button>
+        </div>
+    </div>
+    {% endfor %}
+</section>

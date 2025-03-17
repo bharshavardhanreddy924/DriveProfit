@@ -1,0 +1,172 @@
+# Advanced Mercedes-Benz Sales and Product Analysis 2025
+
+## Sales Distribution and Statistical Analysis
+
+### Segment-wise Performance Metrics
+
+#### SUV Segment Performance
+- Total SUV sales: 596 units (70.6% of total volume)
+- Conventional SUV models: 569 units (95.5% of SUV sales)
+- Electric SUV models: 27 units (4.5% of SUV sales)
+- Average monthly SUV sales: 49.7 units
+- Standard deviation in monthly sales: 14.3 units
+- Segment price range: ₹50.75L (GLA) to ₹3.39Cr (GLS MM)
+- Best performing price bracket: ₹50L-75L (358 units, 60% of SUV sales)
+
+#### Sedan Performance Metrics
+- Total sedan sales: 165 units (19.5% of total volume)
+- Conventional sedan models: 156 units (94.5% of sedan sales)
+- Electric sedan models: 11 units (5.5% of sedan sales)
+- Average monthly sedan sales: 13.75 units
+- Standard deviation: 8.2 units
+- Highest concentration: E-Class and C-Class (132 units combined)
+
+### Price-Performance Correlation Analysis
+
+#### Entry Segment (₹40L-60L)
+- Models: A, C, GLA, GLB
+- Total sales: 264 units
+- Sales/model ratio: 66 units
+- Market share: 31.3%
+- Monthly sales consistency coefficient: 0.68
+- Average price point: ₹54.98L
+
+#### Mid-Range Segment (₹60L-100L)
+- Models: GLC, GLE, C43, GLE 53, AMGGLA35, AMG GLC43, CLE AMG
+- Total sales: 347 units
+- Sales/model ratio: 49.6 units
+- Market share: 41.1%
+- Monthly sales consistency coefficient: 0.75
+- Average price point: ₹87.24L
+
+#### Premium Segment (₹1Cr-2Cr)
+- Models: S, G, AMG GT, AMG SL55
+- Total sales: 20 units
+- Sales/model ratio: 5 units
+- Market share: 2.4%
+- Monthly sales consistency coefficient: 0.32
+- Average price point: ₹1.89Cr
+
+#### Ultra-Luxury Segment (₹2Cr+)
+- Models: S MM, GLS MM, AMG G63, EQS MM
+- Total sales: 18 units
+- Sales/model ratio: 4.5 units
+- Market share: 2.1%
+- Monthly sales consistency coefficient: 0.28
+- Average price point: ₹3.11Cr
+
+## New Advanced Metrics
+
+### Value Proposition Analysis
+
+#### Price-Space Efficiency (₹ per cubic meter of interior volume)
+1. Most Efficient:
+   - A-Class: ₹5.47L/m³
+   - GLA: ₹5.89L/m³
+   - C-Class: ₹6.12L/m³
+
+2. Least Efficient:
+   - S MM: ₹18.23L/m³
+   - AMG G63: ₹16.89L/m³
+   - EQS MM: ₹15.76L/m³
+
+#### Power Delivery Efficiency (HP per ₹1L)
+1. Best Value:
+   - GLA: 0.436 HP/₹1L
+   - A-Class: 0.375 HP/₹1L
+   - C-Class: 0.444 HP/₹1L
+
+2. Premium Segment:
+   - AMG G63: 0.158 HP/₹1L
+   - S MM: 0.181 HP/₹1L
+   - GLS MM: 0.162 HP/₹1L
+
+### Electric Vehicle Market Analysis
+
+#### EV Premium Analysis
+- Average price premium over ICE counterparts: 32.4%
+- Range-to-price ratio (km/₹1L):
+  1. EQA: 6.00 km/₹1L
+  2. EQB: 5.85 km/₹1L
+  3. EQS: 3.83 km/₹1L
+
+#### EV Market Penetration
+- Total EV sales: 38 units (4.5% of total sales)
+- Monthly EV sales trend: Increasing (0.8% growth MoM)
+- Best performing EV: EQE SUV (10 units)
+- EV segment price elasticity: -2.3 (highly elastic)
+
+### Advanced Segment Analysis
+
+#### Body Style Distribution
+1. SUV: 70.6% (596 units)
+   - Compact SUV: 18.6%
+   - Mid-size SUV: 39.7%
+   - Full-size SUV: 12.3%
+
+2. Sedan: 19.5% (165 units)
+   - Compact: 7.1%
+   - Mid-size: 8.7%
+   - Full-size: 3.7%
+
+3. Specialty Vehicles: 9.9% (83 units)
+   - Coupe/Convertible: 1.0%
+   - Performance variants: 8.9%
+
+### Regional Market Potential Indicators
+
+#### Price Bracket Optimization
+- Entry segment elasticity: -1.8
+- Mid-range segment elasticity: -1.2
+- Premium segment elasticity: -0.7
+- Ultra-luxury segment elasticity: -0.4
+
+#### Product Mix Efficiency
+- Portfolio diversity index: 0.82
+- Model overlap coefficient: 0.23
+- Price point distribution score: 0.76
+- Performance spread ratio: 0.68
+
+## Strategic Insights
+
+### Market Opportunities
+
+1. Electric Vehicle Segment
+   - Current penetration (4.5%) indicates significant growth potential
+   - Price-to-range ratio optimization needed for better market acceptance
+   - EV premium needs rationalization for mass market adoption
+
+2. SUV Dominance
+   - Strong market acceptance across price points
+   - Opportunity for electric SUV expansion
+   - Premium SUV segment shows robust demand
+
+3. Performance Vehicle Strategy
+   - AMG variants show selective but steady demand
+   - Price premium acceptance varies by segment
+   - Opportunity for electrified performance variants
+
+### Product Portfolio Recommendations
+
+1. Short-term Optimization
+   - Strengthen GLA/GLC/GLE lineup (70% of sales)
+   - Optimize electric vehicle pricing strategy
+   - Expand mid-range performance variants
+
+2. Mid-term Development
+   - Develop electric SUV variants in high-volume segments
+   - Rationalize specialty vehicle portfolio
+   - Introduce hybrid variants in volume segments
+
+3. Long-term Strategy
+   - Full electrification pathway for volume segments
+   - Premium segment electrification strategy
+   - Performance hybrid technology development
+
+This enhanced analysis provides comprehensive insights into:
+- Detailed segment performance metrics
+- Price-value relationships across segments
+- Electric vehicle market dynamics
+- Product portfolio optimization opportunities
+- Strategic market positioning
+- Future development pathways

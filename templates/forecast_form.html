@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Forecast</title>
+</head>
+<body>
+    <h2>Select Cutoff Month</h2>
+    <form action="/forecast" method="POST">
+        <label for="cutoff">Choose cutoff month:</label>
+        <select name="cutoff">
+            {% for option in cutoff_options %}
+                <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Generate Forecast">
+    </form>
+</body>
+</html>

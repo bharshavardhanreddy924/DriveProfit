@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Forecast Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Sales Forecast Analysis</h2>
+        
+        <h3>Monthly Sales Forecast</h3>
+        <canvas id="salesChart"></canvas>
+        
+        <h3>Forecasted Data</h3>
+        <table>
+            <tr>
+                <th>Month</th>
+                <th>Actual Sales</th>
+                {% for model in models %}
+                <th>{{ model }} Forecast</th>
+                {% endfor %}
+            </tr>
+            {% for i in range(13) %}
+            <tr>
+                <td>{{ months[i] }}</td>
+                <td>{{ actual_sales[i] if actual_sales[i] is not none else "N/A" }}</td>
+                {% for model in models %}
+                <td>{{ predictions[model][i]|round(2) }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <h3>Model Error Metrics (MAE)</h3>
+        <table>
+            <tr>
+                <th>Model</th>
+                <th>MAE</th>
+            </tr>
+            {% for model, mae in error_metrics.items() %}
+            <tr>
+                <td>{{ model }}</td>
+                <td>{{ mae|round(2) if mae is not none else "N/A" }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <script>
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ months|tojson }},
+                datasets: [
+                    {
+                        label: 'Actual Sales',
+                        data: {{ actual_sales|tojson }},
+                        borderColor: 'black',
+                        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                        fill: false,
+                        borderWidth: 2,
+                        pointStyle: 'circle',
+                        pointRadius: 5
+                    },
+                    {% for model in models %}
+                    {
+                        label: '{{ model }} Forecast',
+                        data: {{ predictions[model]|tojson }},
+                        borderColor: '{{ colors[loop.index0] }}',
+                        fill: false,
+                        borderWidth: 2,
+                        pointStyle: 'cross',
+                        pointRadius: 5
+                    },
+                    {% endfor %}
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Sales Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        body {
+            background-image: url('static/images/back.png');
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .chat-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .chat-header i {
+            font-size: 24px;
+            color: #00A0E3;
+            margin-right: 15px;
+        }
+
+        .chat-header h2 {
+            color: #fff;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .chat-box {
+            height: 600px;
+            overflow-y: auto;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: #00A0E3;
+            margin-left: 20%;
+            margin-right: 5px;
+            color: white;
+        }
+
+        .bot-message {
+            background: rgba(255, 255, 255, 0.1);
+            margin-right: 20%;
+            margin-left: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 15px;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message-input {
+            flex-grow: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .message-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .message-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .send-button {
+            padding: 12px 30px;
+            background: #00A0E3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .send-button:hover {
+            background: #0088C7;
+            transform: translateY(-2px);
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 8px;
+        }
+
+        .loading {
+            display: none;
+            margin: 15px 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            text-align: center;
+        }
+
+        .source-info {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 8px;
+        }
+
+        /* Scrollbar Styling */
+        .chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-box::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-box::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .chat-box::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <i class="fas fa-robot"></i>
+            <h2>Financial Sales Assistant</h2>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <div class="message bot-message">
+                Hello! I'm your financial sales assistant. I can help you analyze sales data, identify trends, and provide strategic recommendations. What would you like to know?
+                <div class="timestamp">Now</div>
+            </div>
+        </div>
+        <div class="loading" id="loading">
+            <i class="fas fa-circle-notch fa-spin"></i> Analyzing data and generating response...
+        </div>
+        <div class="input-container">
+            <input type="text" class="message-input" id="messageInput" 
+                   placeholder="Ask about sales trends, performance analysis, or strategic recommendations...">
+            <button class="send-button" id="sendButton">
+                <i class="fas fa-paper-plane"></i>
+                Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            function scrollToBottom() {
+                const chatBox = document.getElementById('chatBox');
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            function addMessage(content, isUser = false) {
+                const timestamp = new Date().toLocaleTimeString();
+                let messageContent = content;
+                
+                if (!isUser && content.includes('[Sources:')) {
+                    const parts = content.split('[Sources:');
+                    messageContent = parts[0];
+                    const sourceInfo = '[Sources:' + parts[1];
+                    
+                    const messageDiv = $('<div></div>')
+                        .addClass('message')
+                        .addClass('bot-message')
+                        .html(messageContent + 
+                              '<div class="source-info">' + sourceInfo + '</div>' +
+                              '<div class="timestamp">' + timestamp + '</div>');
+                    $('#chatBox').append(messageDiv);
+                } else {
+                    const messageDiv = $('<div></div>')
+                        .addClass('message')
+                        .addClass(isUser ? 'user-message' : 'bot-message')
+                        .html(messageContent + '<div class="timestamp">' + timestamp + '</div>');
+                    $('#chatBox').append(messageDiv);
+                }
+                
+                scrollToBottom();
+            }
+
+            function sendMessage() {
+                const messageInput = $('#messageInput');
+                const message = messageInput.val().trim();
+                
+                if (message) {
+                    addMessage(message, true);
+                    messageInput.val('');
+                    $('#loading').show();
+
+                    $.ajax({
+                        url: '/ask',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ question: message }),
+                        success: function(response) {
+                            $('#loading').hide();
+                            addMessage(response.response);
+                        },
+                        error: function(xhr, status, error) {
+                            $('#loading').hide();
+                            addMessage('Sorry, there was an error analyzing your request. Please try again.');
+                        }
+                    });
+                }
+            }
+
+            $('#sendButton').click(sendMessage);
+            $('#messageInput').keypress(function(e) {
+                if (e.which == 13) {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

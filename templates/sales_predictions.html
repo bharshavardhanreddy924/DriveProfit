@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercedes Sales Predictions Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.0/gsap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .animate-pulse-slow {
+            animation: pulse 2s infinite;
+        }
+        .prediction-card {
+            transition: all 0.3s ease;
+        }
+        .prediction-card:hover {
+            transform: translateY(-5px);
+        }
+        .loading-wave {
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #4F46E5, transparent);
+            background-size: 200% 100%;
+            animation: wave 1.5s infinite linear;
+        }
+        @keyframes wave {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 hidden flex-col items-center justify-center">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="fas fa-car-side text-6xl text-indigo-600 animate-pulse-slow"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Analyzing Sales Data</h2>
+            <div class="space-y-2 text-gray-600">
+                <p id="loadingStatus">Initializing models...</p>
+                <div class="w-64 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="loadingProgress" class="h-full bg-indigo-600 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-gray-900 to-indigo-900 text-white shadow-xl fixed w-full z-40">
+            <div class="container mx-auto px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold flex items-center">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            Sales Forecast Dashboard
+                        </h1>
+                        <p class="text-indigo-200 mt-1">Advanced Predictive Analytics for January 2025</p>
+                    </div>
+                    <button id="showModelsBtn" class="hidden bg-indigo-600 hover:bg-indigo-700 px-6 py-2 rounded-lg shadow-lg transition-all duration-300 flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Back to Models
+                    </button>
+                </div>
+            </div>
+            <div class="loading-wave" id="loadingWave"></div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-6 py-8 mt-28 flex-grow">
+            <!-- Model Selection Grid -->
+            <div id="modelGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for model in car_models %}
+                <div class="fade-in prediction-card bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer border border-gray-100"
+                     onclick="showPredictions('{{ model }}')">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-car text-2xl text-indigo-600 mr-3"></i>
+                            <h3 class="text-xl font-semibold text-gray-800">{{ model }}</h3>
+                        </div>
+                        <p class="text-gray-600 flex items-center">
+                            <i class="fas fa-chart-bar mr-2"></i>
+                            Click to view detailed analysis
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Prediction Results -->
+            <div id="predictionResults" class="hidden space-y-6">
+                <!-- Navigation Bar -->
+                <div class="bg-white rounded-xl shadow-lg p-4 mb-6">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <button onclick="previousModel()" class="text-gray-600 hover:text-indigo-600 transition-colors">
+                                <i class="fas fa-chevron-left text-xl"></i>
+                            </button>
+                            <h2 id="selectedModelName" class="text-3xl font-bold text-gray-800"></h2>
+                            <button onclick="nextModel()" class="text-gray-600 hover:text-indigo-600 transition-colors">
+                                <i class="fas fa-chevron-right text-xl"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm text-gray-600">
+                            <span><i class="fas fa-keyboard mr-1"></i> Use arrow keys to navigate</span>
+                            <span class="mx-2">|</span>
+                            <span><i class="fas fa-esc mr-1"></i> ESC to go back</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Analysis Card -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <!-- Model Details Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="prediction-card bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-car-side text-indigo-600 text-xl mr-2"></i>
+                                <h3 class="font-semibold text-gray-800">Car Type</h3>
+                            </div>
+                            <p id="carType" class="text-2xl font-bold text-gray-900"></p>
+                        </div>
+
+                        <div class="prediction-card bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-tag text-indigo-600 text-xl mr-2"></i>
+                                <h3 class="font-semibold text-gray-800">Price</h3>
+                            </div>
+                            <p id="carPrice" class="text-2xl font-bold text-gray-900"></p>
+                        </div>
+
+                        <div class="prediction-card bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-chart-line text-indigo-600 text-xl mr-2"></i>
+                                <h3 class="font-semibold text-gray-800">Avg Sales (2024)</h3>
+                            </div>
+                            <p id="avgSales" class="text-2xl font-bold text-gray-900"></p>
+                        </div>
+
+                        <div class="prediction-card bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-percentage text-indigo-600 text-xl mr-2"></i>
+                                <h3 class="font-semibold text-gray-800">Confidence</h3>
+                            </div>
+                            <p id="predictionConfidence" class="text-2xl font-bold text-gray-900"></p>
+                        </div>
+                    </div>
+
+                    <!-- Predictions Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="prediction-card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-chart-bar text-blue-600 text-xl mr-2"></i>
+                                <h3 class="font-semibold text-blue-800">Linear Regression</h3>
+                            </div>
+                            <p id="linearPrediction" class="text-3xl font-bold text-blue-600"></p>
+                            <p class="text-sm text-blue-700 mt-2">Predicted Units</p>
+                        </div>
+
+                        <div class="prediction-card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-tree text-green-600 text-xl mr-2"></i>
+                                <h3 class="font-semibold text-green-800">Random Forest</h3>
+                            </div>
+                            <p id="rfPrediction" class="text-3xl font-bold text-green-600"></p>
+                            <p class="text-sm text-green-700 mt-2">Predicted Units</p>
+                        </div>
+
+                        <div class="prediction-card bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-brain text-purple-600 text-xl mr-2"></i>
+                                <h3 class="font-semibold text-purple-800">Ensemble Model</h3>
+                            </div>
+                            <p id="ensemblePrediction" class="text-3xl font-bold text-purple-600"></p>
+                            <p class="text-sm text-purple-700 mt-2">Weighted Prediction</p>
+                        </div>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="bg-white rounded-xl p-6 border border-gray-200">
+                        <div class="h-96">
+                            <canvas id="predictionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-4 mt-8">
+            <div class="container mx-auto px-6 text-center text-sm">
+                <p>© 2025 Mercedes-Benz Sales Prediction Dashboard</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let currentModelIndex = -1;
+        let carModels = [];
+        let predictionChart = null;
+
+        // Initialize car models array
+        {% for model in car_models %}
+            carModels.push("{{ model }}");
+        {% endfor %}
+
+        // Add fade-in animation on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.classList.add('active');
+                }, index * 100);
+            });
+        });
+
+        function simulateLoading(callback) {
+            const overlay = document.getElementById('loadingOverlay');
+            const progress = document.getElementById('loadingProgress');
+            const status = document.getElementById('loadingStatus');
+            const steps = [
+                'Initializing models...',
+                'Processing historical data...',
+                'Calculating predictions...',
+                'Preparing visualization...'
+            ];
+            
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            
+            let currentStep = 0;
+            const stepDuration = 800;
+            const updateProgress = () => {
+                if (currentStep < steps.length) {
+                    const progressWidth = (currentStep + 1) * (100 / steps.length);
+                    progress.style.width = `${progressWidth}%`;
+                    status.textContent = steps[currentStep];
+                    currentStep++;
+                    setTimeout(updateProgress, stepDuration);
+                } else {
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        overlay.classList.remove('flex');
+                        if (callback) callback();
+                    }, 500);
+                }
+            };
+            
+            updateProgress();
+        }
+
+        function previousModel() {
+            if (currentModelIndex > 0) {
+                showPredictions(carModels[currentModelIndex - 1]);
+            }
+        }
+
+        function nextModel() {
+            if (currentModelIndex < carModels.length - 1) {
+                showPredictions(carModels[currentModelIndex + 1]);
+            }
+        }
+
+        async function showPredictions(modelName) {
+            try {
+                document.getElementById('loadingWave').style.display = 'block';
+                currentModelIndex = carModels.indexOf(modelName);
+                
+                // Update UI state
+                document.getElementById('modelGrid').classList.add('hidden');
+                document.getElementById('predictionResults').classList.remove('hidden');
+                document.getElementById('showModelsBtn').classList.remove('hidden');
+                
+                // Show loading animation
+                simulateLoading(async () => {
+                    const response = await fetch(`/get_predictions/${encodeURIComponent(modelName)}`);
+                    const data = await response.json();
+                    
+                    // Animate in the new data
+                    gsap.from('#selectedModelName', {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.5
+                    });
+                    
+                    // Update model name with animation
+                    document.getElementById('selectedModelName').textContent = modelName;
+                    
+                    // Update predictions with counting animation
+                    const animateCounter = (elementId, value) => {
+                        const element = document.getElementById(elementId);
+                        const duration = 1500;
+                        const startValue = 0;
+                        const startTime = Date.now();
+                        
+                        const updateCounter = () => {
+                            const currentTime = Date.now();
+                            const progress = Math.min((currentTime - startTime) / duration, 1);
+                            const currentValue = Math.round(startValue + (value - startValue) * progress);
+                            element.textContent = currentValue.toLocaleString();
+                            
+                            if (progress < 1) {
+                                requestAnimationFrame(updateCounter);
+                            }
+                        };
+                        
+                        updateCounter();
+                    };
+
+                    // Animate in prediction values
+                    animateCounter('linearPrediction', Math.round(data.predictions.linear));
+                    animateCounter('rfPrediction', Math.round(data.predictions.random_forest));
+                    animateCounter('ensemblePrediction', Math.round(data.predictions.ensemble));
+                    
+                    // Update car details with fade animations
+                    gsap.to(['#carType', '#carPrice', '#avgSales', '#predictionConfidence'], {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        stagger: 0.1,
+                        ease: 'power2.out',
+                        onStart: () => {
+                            document.getElementById('carType').textContent = data.car_details.type;
+                            document.getElementById('carPrice').textContent = `$${data.car_details.price.toLocaleString()}`;
+                            document.getElementById('avgSales').textContent = Math.round(data.car_details.avg_sales).toLocaleString();
+                            document.getElementById('predictionConfidence').textContent = `${data.car_details.prediction_confidence}%`;
+                        }
+                    });
+                    
+                    // Update chart with animation
+                    updateChart(data.historical_data, data.predictions);
+                    
+                    // Hide loading wave
+                    document.getElementById('loadingWave').style.display = 'none';
+                });
+                
+            } catch (error) {
+                console.error('Error fetching predictions:', error);
+                document.getElementById('loadingWave').style.display = 'none';
+                
+                // Show error notification
+                showNotification('Error loading predictions. Please try again.', 'error');
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg ${
+                type === 'error' ? 'bg-red-600' : 'bg-indigo-600'
+            } text-white z-50 transform transition-all duration-300 translate-y-full`;
+            
+            notification.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateY(0)';
+            }, 100);
+            
+            // Animate out
+            setTimeout(() => {
+                notification.style.transform = 'translateY(full)';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        function updateChart(historicalData, predictions) {
+            if (predictionChart) {
+                predictionChart.destroy();
+            }
+
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            
+            const gradientFill = ctx.createLinearGradient(0, 0, 0, 400);
+            gradientFill.addColorStop(0, 'rgba(99, 102, 241, 0.1)');
+            gradientFill.addColorStop(1, 'rgba(99, 102, 241, 0)');
+
+            predictionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [...historicalData.months, 'Jan 2025'],
+                    datasets: [
+                        {
+                            label: 'Historical Sales',
+                            data: historicalData.sales,
+                            borderColor: 'rgb(99, 102, 241)',
+                            backgroundColor: gradientFill,
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Linear Regression',
+                            data: [...Array(historicalData.sales.length).fill(null), predictions.linear],
+                            borderColor: 'rgb(59, 130, 246)',
+                            borderDash: [5, 5],
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Random Forest',
+                            data: [...Array(historicalData.sales.length).fill(null), predictions.random_forest],
+                            borderColor: 'rgb(34, 197, 94)',
+                            borderDash: [5, 5],
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Ensemble Prediction',
+                            data: [...Array(historicalData.sales.length).fill(null), predictions.ensemble],
+                            borderColor: 'rgb(168, 85, 247)',
+                            borderWidth: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    animations: {
+                        tension: {
+                            duration: 1000,
+                            easing: 'linear'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Sales Units',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            displayColors: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += Math.round(context.parsed.y).toLocaleString();
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Add event listener for the "Back to Models" button
+        document.getElementById('showModelsBtn').addEventListener('click', () => {
+            gsap.to('#predictionResults', {
+                opacity: 0,
+                y: 20,
+                duration: 0.3,
+                onComplete: () => {
+                    document.getElementById('modelGrid').classList.remove('hidden');
+                    document.getElementById('predictionResults').classList.add('hidden');
+                    document.getElementById('showModelsBtn').classList.add('hidden');
+                    gsap.from('#modelGrid', {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.3
+                    });
+                }
+            });
+            
+            if (predictionChart) {
+                predictionChart.destroy();
+                predictionChart = null;
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('predictionResults').classList.contains('hidden')) {
+                return;
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                previousModel();
+            } else if (e.key === 'ArrowRight') {
+                nextModel();
+            } else if (e.key === 'Escape') {
+                document.getElementById('showModelsBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>

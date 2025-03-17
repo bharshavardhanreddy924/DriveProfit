@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Forecast Result</title>
+  </head>
+  <body>
+    <h1>Forecast Result: {{ forecast_details.scenario_label }}</h1>
+    <img src="data:image/png;base64,{{ plot_data }}" alt="Forecast Plot">
+    
+    <h2>Error Metrics (MAE):</h2>
+    <ul>
+      {% for model, mae in forecast_details.error_metrics.items() %}
+        <li><strong>{{ model }}:</strong> 
+          {% if mae is not none %}
+            {{ mae|round(2) }}
+          {% else %}
+            N/A
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+    
+    <h2>Predicted Sales Values (Full Series: Jan–Dec & Jan-25):</h2>
+    {% for model, series in forecast_details.predicted_series.items() %}
+      <h3>{{ model }} Forecast:</h3>
+      <ul>
+        {% for month, value in zip(forecast_details.x_labels, series) %}
+          <li><strong>{{ month }}:</strong> {{ value|round(2) }}</li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+    
+    <p><a href="{{ url_for('forecast') }}">Back to Forecast Selection</a></p>
+  </body>
+</html>
